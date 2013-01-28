@@ -1,7 +1,7 @@
 source :rubygems
 
 gem 'sinatra', :require=>'sinatra/base'
-gem 'sinatra-contrib', :require=>['sinatra/json']
+gem 'sinatra-contrib', :require=>['sinatra/json', 'sinatra/namespace']
 gem 'sequel'
 gem 'mysql2'
 

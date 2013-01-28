@@ -1,9 +1,10 @@
+APP_ENVIRONMENT = (ENV['RACK_ENV'] || 'development').to_sym
+APP_ROOT = File.expand_path('../..', __FILE__)
+
 require 'rubygems'
 require 'bundler/setup'
-LILAC_ENVIRONMENT = (ENV['RACK_ENV'] || 'develop').to_sym
-p LILAC_ENVIRONMENT
-Bundler.require(:default, LILAC_ENVIRONMENT)
+Bundler.require(:default, APP_ENVIRONMENT)
 
-require File.expand_path('../database.rb', __FILE__)
-require File.expand_path('../../app/lilac-api', __FILE__)
+require "#{APP_ROOT}/config/database"
+require "#{APP_ROOT}/app/lilac-api"
 
