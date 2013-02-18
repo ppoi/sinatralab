@@ -1,7 +1,11 @@
 
 task :environment, [:env] do |cmd, args|
-  ENV["RACK_ENV"] = args[:env] || "development"
-  require './config/boot'
+  ENV["RACK_ENV"] = args[:env] if args[:env] 
+  require File.expand_path('../config/boot', __FILE__)
+end
+
+task :for_test, [:env] do |cmd, args|
+  Rake::Task[:environment].execute(:env=>"test")
 end
 
 namespace :sq do
@@ -38,4 +42,12 @@ namespace :sq do
       puts "<= sq:migrate:down executed"
     end
   end
+end
+
+task :spec => [:for_test, :environment] do
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:specs) do |t|
+    t.rspec_opts = %w(-fs --color)
+  end
+  Rake::Task[:specs].execute
 end

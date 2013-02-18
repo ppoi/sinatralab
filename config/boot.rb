@@ -1,4 +1,4 @@
-APP_ENVIRONMENT = (ENV['RACK_ENV'] || 'development').to_sym
+APP_ENVIRONMENT = (ENV['RACK_ENV'] || 'development').to_sym unless defined?(APP_ENVIRONMENT)
 APP_ROOT = File.expand_path('../..', __FILE__)
 
 require 'rubygems'
