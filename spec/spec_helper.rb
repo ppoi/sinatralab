@@ -20,3 +20,7 @@ end
 
 FactoryGirl.find_definitions
 
+def app
+  @app ||= LilacAPI::Application
+end
+

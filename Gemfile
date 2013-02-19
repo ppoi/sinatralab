@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'rack-contrib', :require=>'rack/contrib'
 gem 'sinatra', :require=>'sinatra/base'
 gem 'sinatra-contrib', :require=>['sinatra/json', 'sinatra/namespace']
 gem 'sequel'

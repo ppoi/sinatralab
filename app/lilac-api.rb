@@ -1,4 +1,5 @@
 
+
 module LilacAPI
   class Application < Sinatra::Base
     configure :development do |config|
@@ -10,6 +11,8 @@ module LilacAPI
       set :public_folder, File.expand_path('../../public', __FILE__)
       set :json_encoder, :to_json
       register Sinatra::Namespace
+      use Rack::PostBodyContentTypeParser
+      set :logging, true
     end
   end
 end
