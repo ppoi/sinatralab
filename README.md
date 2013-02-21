@@ -7,5 +7,6 @@
 2. RSpecによる自動テスト
 3. Rakeによるタスク自動化
 4. MySQL+mroongaデータベースに対する全文検索
-
+5. simplecovによるカバレッジレポート
+6. JenkinsでのCI(自動テスト,各種レポート)
 

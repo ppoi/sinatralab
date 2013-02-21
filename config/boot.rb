@@ -6,5 +6,6 @@ require 'bundler/setup'
 Bundler.require(:default, APP_ENVIRONMENT)
 
 require "#{APP_ROOT}/config/database"
-require "#{APP_ROOT}/app/lilac-api"
+
+$:.unshift "#{APP_ROOT}/app".untaint
 

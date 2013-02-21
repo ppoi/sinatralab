@@ -1,6 +1,18 @@
 ENV['RACK_ENV'] = "test" unless ENV['RACK_ENV']
 require File.expand_path('../config/boot', File.dirname(__FILE__))
 
+require 'simplecov'
+require 'simplecov-rcov'
+SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+SimpleCov.start do
+  add_filter '/gems/'
+  add_filter '/config/'
+  add_filter '/spec/'
+end
+
+require 'lilac-api'
+
+
 RSpec.configure do |conf|
   conf.include Rack::Test::Methods
   conf.include FactoryGirl::Syntax::Methods
@@ -19,6 +31,8 @@ RSpec.configure do |conf|
 end
 
 FactoryGirl.find_definitions
+
+
 
 def app
   @app ||= LilacAPI::Application

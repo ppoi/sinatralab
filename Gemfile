@@ -13,4 +13,6 @@ group :test do
   gem 'rack-test', :require=>'rack/test'
   gem 'factory_girl'
   gem 'database_cleaner'
+  gem 'simplecov', :require=> false
+  gem 'simplecov-rcov', :require=>false
 end
