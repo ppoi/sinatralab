@@ -47,7 +47,7 @@ end
 task :spec => [:for_test, :environment] do
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:specs) do |t|
-    t.rspec_opts = %w(-fs --color)
+    t.rspec_opts = %w(--format RspecJunitFormatter --out rspec.xml)
   end
   Rake::Task[:specs].execute
 end

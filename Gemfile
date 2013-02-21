@@ -15,4 +15,5 @@ group :test do
   gem 'database_cleaner'
   gem 'simplecov', :require=> false
   gem 'simplecov-rcov', :require=>false
+  gem 'rspec_junit_formatter'
 end
