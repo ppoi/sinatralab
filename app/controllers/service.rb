@@ -2,7 +2,10 @@
 module LilacAPI
   class Application
     get '/' do
-      "Lilac API...?"
+      json({
+        label: "/label",
+        booksearch: "/booksearch"
+      })
     end
 
   end
