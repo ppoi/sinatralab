@@ -50,5 +50,6 @@ task :spec => [:for_test, :environment] do
     t.rspec_opts = %w(--format RspecJunitFormatter --out rspec.xml)
     t.fail_on_error = false
   end
+  ENV['COVERAGE'] = 'true'
   Rake::Task[:specs].execute
 end
