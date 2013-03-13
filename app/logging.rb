@@ -1,13 +1,29 @@
 require 'logger'
 require 'singleton'
 
-module LilacAPI
+module Lilac
 
   class Logging
     include Singleton
 
     def initialize
-      @logger ||= Logger.new(STDOUT)
+
+      case Config[:stream]
+        when :stdout then logdev = STDOUT
+        else logdev = STDOUT
+      end
+
+      case Config[:log_level]
+        when :debug then log_level = ::Logger::DEBUG
+        when :info  then log_level = ::Logger::INFO
+        when :warn  then log_level = ::Logger::WARN
+        when :error then log_level = ::Logger::ERROR
+        when :fatal then log_level = ::Logger::FATAL
+        else log_level = Logger::INFO
+      end
+
+      @logger = Logger.new(logdev)
+      @logger.level = log_level
     end
 
     def debug(msg)
@@ -29,10 +45,13 @@ module LilacAPI
     def fatal(msg)
       @logger.fatal(msg)
     end
-  end
 
-  def self.logger
-    LilacAPI::Logging.instance
+    Config = {
+      log_level: :warn,
+      stream: :stdout
+    }
+
   end
 
 end
+
