@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'controllers/service'
 require 'json'
 
 describe 'Service API' do

@@ -1,5 +1,5 @@
 ENV['RACK_ENV'] = "test" unless ENV['RACK_ENV']
-require File.expand_path('../config/boot', File.dirname(__FILE__))
+require File.expand_path('../../app/boot', __FILE__)
 
 
 if ENV['COVERAGE']
@@ -12,8 +12,6 @@ if ENV['COVERAGE']
     add_filter '/spec/'
   end
 end
-
-require 'lilac-api'
 
 
 RSpec.configure do |conf|

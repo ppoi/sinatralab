@@ -1,3 +1,4 @@
+require 'controllers/base'
 
 module LilacAPI
   class Application

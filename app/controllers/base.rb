@@ -1,5 +1,4 @@
 
-
 module LilacAPI
   class Application < Sinatra::Base
     configure :development do |config|
@@ -17,9 +16,3 @@ module LilacAPI
   end
 end
 
-module_paths = ['models', 'helpers', 'controllers']
-module_paths.each do |path|
-  Dir.glob "#{APP_ROOT}/app/#{path}/**/*.rb" do |file|
-    require file
-  end
-end

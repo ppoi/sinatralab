@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+require 'models/label'
 
 FactoryGirl.define do
   to_create {|instance| instance.save}

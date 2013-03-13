@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+require 'models/bibliography'
 
 FactoryGirl.define do
   to_create {|instance| instance.save}

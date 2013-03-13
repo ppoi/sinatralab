@@ -1,5 +1,8 @@
 # -*- encoding: utf-8 -*-
 
+require 'spec_helper'
+require 'models/label'
+
 describe "Label Model" do
 
   it 'return nil by non-existing id' do

@@ -1,3 +1,5 @@
+require 'controllers/base'
+require 'models/label'
 
 module LilacAPI
   class Application
