@@ -1,7 +1,7 @@
 
 task :environment, [:env] do |cmd, args|
   ENV["RACK_ENV"] = args[:env] if args[:env] 
-  require File.expand_path('../config/boot', __FILE__)
+  require File.expand_path('../app/boot', __FILE__)
 end
 
 task :for_test, [:env] do |cmd, args|
