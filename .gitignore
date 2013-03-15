@@ -3,3 +3,4 @@ Gemfile.lock
 coverage
 rspec.xml
 *.swp
+config/settings.rb

@@ -8,10 +8,10 @@ require 'bundler/setup'
 Bundler.require(:default, APP_ENVIRONMENT)
 
 require 'logging'
-require "#{APP_ROOT}/config/logging"
 
 Sequel::Model.plugin :schema
 Sequel::Model.plugin :json_serializer, :naked=>true
 Sequel::Model.raise_on_save_failure = false # Do not throw exceptions on failure
-require "#{APP_ROOT}/config/database"
+
+require "#{APP_ROOT}/config/settings"
 

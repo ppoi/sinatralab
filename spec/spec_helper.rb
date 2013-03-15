@@ -19,7 +19,7 @@ RSpec.configure do |conf|
   conf.include FactoryGirl::Syntax::Methods
 
   conf.before(:suite) do
-    DatabaseCleaner.strategy = :truncation, { except: [:schema_info] }
+    DatabaseCleaner.strategy = :truncation, { except: [:schema_info, :accounts] }
   end
 
   conf.before(:each) do
@@ -28,6 +28,7 @@ RSpec.configure do |conf|
 
   conf.after(:each) do
     DatabaseCleaner.clean
+    DB[:accounts].delete
   end
 end
 

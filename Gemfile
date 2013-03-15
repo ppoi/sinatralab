@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rack-contrib', :require=>'rack/contrib'
+gem 'omniauth-twitter'
 gem 'sinatra', :require=>'sinatra/base'
 gem 'sinatra-contrib', :require=>['sinatra/json', 'sinatra/namespace']
 gem 'sequel'

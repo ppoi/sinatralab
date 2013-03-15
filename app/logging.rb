@@ -55,3 +55,9 @@ module Lilac
 
 end
 
+module Kernel
+  def logs
+    return Lilac::Logging.instance
+  end
+end
+
