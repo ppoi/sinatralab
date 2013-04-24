@@ -7,7 +7,7 @@ require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default, APP_ENVIRONMENT)
 
-require 'logging'
+require 'lilac/logging'
 
 Sequel::Model.plugin :schema
 Sequel::Model.plugin :json_serializer, :naked=>true

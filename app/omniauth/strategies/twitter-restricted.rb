@@ -1,5 +1,5 @@
 require 'omniauth-twitter'
-require 'models/common'
+require 'lilac/models/common'
 
 module OmniAuth
   module Strategies
@@ -11,7 +11,7 @@ module OmniAuth
         logs.debug "Extended request_phase called!"
         username = session['omniauth.params']['username']
         logs.debug "authenticate with #{username}"
-        account = username ? Account[username] : nil
+        account = username ? Lilac::Models::Account[username] : nil
         if account.nil?
           logs.info "account <#{username}> is not found."
           fail!(:invalid_credentials)

@@ -1,14 +1,14 @@
 require 'spec_helper'
-require 'models/common'
+require 'lilac/models/common'
 
-describe "Account Model" do
+describe "Lilac::Models::Account Model" do
   it "return null by non-exists id" do
-    Account['foobar'].should be_nil
+    Lilac::Models::Account['foobar'].should be_nil
   end
 
   it "get by id" do
     create :account, name: 'user1'
-    account = Account['user1']
+    account = Lilac::Models::Account['user1']
     account.should_not be_nil
     account.name.should eq('user1')
     account.email_address.should eq('user1@localhost')
@@ -16,7 +16,7 @@ describe "Account Model" do
 
   it "has no credential by default" do
     create :account, name: 'user1'
-    account = Account['user1']
+    account = Lilac::Models::Account['user1']
     account.credential.should be_nil
   end
 

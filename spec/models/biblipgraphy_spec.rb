@@ -1,23 +1,23 @@
 # -*- encoding: utf-8 -*-
 
 require 'spec_helper'
-require 'models/bibliography'
+require 'lilac/models/bibliography'
 
-describe "Bibliography model" do
+describe "Lilac::Models::Bibliography model" do
 
   it 'can create' do
-    entity = Bibliography.new
+    entity = Lilac::Models::Bibliography.new
     entity.should_not be_nil
   end
 
   it 'can add association' do
-    bib_author = BibAuthor.new
+    bib_author = Lilac::Models::BibAuthor.new
     bib_author.author = create(:author_abc)
 
     entity = create(:bib_abc)
     entity.add_author(bib_author)
 
-    b = Bibliography[entity.id]
+    b = Lilac::Models::Bibliography[entity.id]
     b.should_not be_nil
     authors = b.authors
     authors.should_not be_nil
@@ -32,7 +32,7 @@ describe "Bibliography model" do
   end
 
   it 'return nil if not exists.' do
-    entity = Bibliography[393939393]
+    entity = Lilac::Models::Bibliography[393939393]
     entity.should be_nil
   end
 
@@ -58,7 +58,7 @@ describe "Bibliography model" do
     bib_auth.author = author_ghi
     bib_ghi.add_author(bib_auth)
 
-    result = Bibliography.search({:keyword=>'ABC', :label=>'レーベルA'})
+    result = Lilac::Models::Bibliography.search({:keyword=>'ABC', :label=>'レーベルA'})
     p result
 
   end
@@ -85,7 +85,7 @@ describe "Bibliography model" do
     bib_auth.author = author_ghi
     bib_ghi.add_author(bib_auth)
 
-    result = Bibliography.search(:author_id=>author_def.id)
+    result = Lilac::Models::Bibliography.search(:author_id=>author_def.id)
     p result
   end
 

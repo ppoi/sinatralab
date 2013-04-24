@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'json'
-require 'controllers/label'
+require 'lilac/controller'
 
 describe "Label API" do
 

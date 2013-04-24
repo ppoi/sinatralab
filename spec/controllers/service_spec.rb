@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'controllers/service'
+require 'lilac/controller'
 require 'json'
 
 describe 'Service API' do
