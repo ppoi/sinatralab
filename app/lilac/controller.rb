@@ -1,18 +1,17 @@
 require 'lilac/models/common'
 require 'lilac/models/bibliography'
 
-module LilacAPI
+module Lilac
   class Application < Sinatra::Base
     configure :development, :test do |config|
       logs.debug "loading Sinatra::Reloader"
       require 'sinatra/reloader'
       register Sinatra::Reloader
-      logs.debug  "#{APP_ROOT}/app/**/*"
-      also_reload "#{APP_ROOT}/app/**/*"
+      also_reload "#{APP_ROOT}/app/lilac/**/*.rb"
     end
     configure do
       helpers Sinatra::JSON
-      set :public_folder, File.expand_path('../../public', __FILE__)
+      set :public_folder, File.expand_path("#{APP_ROOT}/public", __FILE__)
       set :json_encoder, :to_json
       enable :sessions
       register Sinatra::Namespace
