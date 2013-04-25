@@ -23,10 +23,7 @@ module Lilac
     end
 
     get '/' do
-      json({
-        label: "/label",
-        booksearch: "/booksearch"
-      })
+      send_file 'public/main.html', :type=>'text/html; charset=UTF-8'
     end
 
     namespace '/auth' do
@@ -57,36 +54,31 @@ module Lilac
       end
     end
 
-    namespace '/label' do
+    namespace '/api' do
       get do
-        entities = Lilac::Models::Label.all
-        json entities
+        json({
+          label: "/api/label",
+          booksearch: "/api/booksearch"
+        })
       end
 
-      get '/:label_id' do
-        entity = Lilac::Models::Label[params[:label_id]]
-        if entity.nil?
-          404
-        else
-          json entity
+      namespace '/label' do
+        get do
+          entities = Lilac::Models::Label.all
+          json entities
         end
-      end
 
-      put nil do
-        entity = Lilac::Models::Label.new
-        entity.name = params["name"] if params.key?("name")
-        entity.website = params["website"] if params.key?("website")
-        entity.publisher = params["publisher"] if params.key?("publisher")
-        entity.note = params["note"] if params.key?("note")
-        entity.save
-        json entity
-      end
+        get '/:label_id' do
+          entity = Lilac::Models::Label[params[:label_id]]
+          if entity.nil?
+            404
+          else
+            json entity
+          end
+        end
 
-      post '/:label_id' do
-        entity = Lilac::Models::Label[params[:label_id]]
-        if entity.nil?
-          404
-        else
+        put nil do
+          entity = Lilac::Models::Label.new
           entity.name = params["name"] if params.key?("name")
           entity.website = params["website"] if params.key?("website")
           entity.publisher = params["publisher"] if params.key?("publisher")
@@ -94,14 +86,27 @@ module Lilac
           entity.save
           json entity
         end
-      end
 
-      delete '/:label_id' do
-        Lilac::Models::Label.where(:id=>params[:label_id]).delete
-        200
+        post '/:label_id' do
+          entity = Lilac::Models::Label[params[:label_id]]
+          if entity.nil?
+            404
+          else
+            entity.name = params["name"] if params.key?("name")
+            entity.website = params["website"] if params.key?("website")
+            entity.publisher = params["publisher"] if params.key?("publisher")
+            entity.note = params["note"] if params.key?("note")
+            entity.save
+            json entity
+          end
+        end
+
+        delete '/:label_id' do
+          Lilac::Models::Label.where(:id=>params[:label_id]).delete
+          200
+        end
       end
     end
-
   end
 end
 

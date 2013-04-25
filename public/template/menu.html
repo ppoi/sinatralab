@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><title>menu</title></head><body>
+
+<div id="menu" data-role="page">
+  <div data-role="header">
+    <a id="user" href="#auth" data-rel="popup" data-icon="home" data-icon-pos="left">guest</a>
+    <h1>Menu</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+      <li data-role="listdivider">Menu</li>
+      <li><a href="#booksearch">蔵書検索</a></li>
+    </ul>
+  </div>
+
+  <div id="auth" data-role="popup">
+    <div id="auth-content" data-role="content">
+      <form id="auth-form">
+        <label for="auth-username" class="ui-hidden-accessible">ユーザ名</label>
+        <input id="auth-username" type="text" placeholder="ユーザ名">
+        <img id="auth-go" src="sign-in-with-twitter-gray.png">
+      </form>
+    </div>
+  </div>
+</div>
+
+</body></html>
