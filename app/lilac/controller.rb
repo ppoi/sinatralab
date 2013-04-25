@@ -50,7 +50,7 @@ module Lilac
            return 401
          end
          account.credential = {screen_name: screen_name, user_id: user_id}
-         return "OK"
+           return 200, {'Content-Type'=>'text/html'}, "<html><body><script type=\"text/javascript\">window.opener.lilac_authenticated({username:\"#{screen_name}\"});window.close();</script></body></html>"
       end
     end
 
