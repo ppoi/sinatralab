@@ -1,0 +1,16 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+    <title>authenticated</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      window.opener.lilac_authenticated({
+        username: '<%= username %>',
+        profile_image_url: '<%= profile_image_url %>'
+      });
+      window.close();
+    </script>
+  </body>
+</html>

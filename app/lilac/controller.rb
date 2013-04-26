@@ -28,29 +28,33 @@ module Lilac
 
     namespace '/auth' do
       get '/twitter/callback' do
-         auth_hash = env['omniauth.auth']
-         logs.debug "==RAW INFO========="
-         logs.debug auth_hash.extra.raw_info
-         logs.debug "==INFO============="
-         logs.debug auth_hash.info
-         logs.debug "==SESSION=========="
-         logs.debug session
-         logs.debug "-----"
-         logs.debug auth_hash
+        auth_hash = env['omniauth.auth']
+        logs.debug "==RAW INFO========="
+        logs.debug auth_hash.extra.raw_info
+        logs.debug "==INFO============="
+        logs.debug auth_hash.info
+        logs.debug "==SESSION=========="
+        logs.debug session
+        logs.debug "-----"
+        logs.debug auth_hash
 
-         username = params['username']
-         screen_name = auth_hash.extra.raw_info['screen_name']
-         user_id = auth_hash.extra.raw_info['id']
-         account = Lilac::Models::Account[username]
-         if account.nil?
-            return 401
-         end
-         credential = account.credential
-         if not credential.nil? and credential.user_id != user_id
-           return 401
-         end
-         account.credential = {screen_name: screen_name, user_id: user_id}
-           return 200, {'Content-Type'=>'text/html'}, "<html><body><script type=\"text/javascript\">window.opener.lilac_authenticated({username:\"#{screen_name}\"});window.close();</script></body></html>"
+        username = params['username']
+        screen_name = auth_hash.extra.raw_info['screen_name']
+        user_id = auth_hash.extra.raw_info['id']
+        account = Lilac::Models::Account[username]
+        if account.nil?
+          return 401
+        end
+        credential = account.credential
+        if not credential.nil? and credential.user_id != user_id
+          return 401
+        end
+        account.credential = {screen_name: screen_name, user_id: user_id}
+        auth_info = {
+          username: username,
+          profile_image_url: auth_hash.extra.raw_info['profile_image_url']
+        }
+        erb :authenticated, :locals=>auth_info, :content_type=>'text/html'
       end
     end
 
