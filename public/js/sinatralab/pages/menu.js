@@ -6,7 +6,6 @@ MenuPage.prototype.setup_handlers = function(page) {
   $('#auth-go', page).click(function() {
     $('#auth-form').submit();
   });
-  $(document).bind('lilacauth', $.proxy(this.auth_ok, this));
 };
 MenuPage.prototype.authenticate = function() {
   var username = $('#auth-username').val(),
@@ -16,14 +15,6 @@ MenuPage.prototype.authenticate = function() {
     alert('hoge');
   };
   return false;
-};
-MenuPage.prototype.auth_ok = function(event, session) {
-  $('#auth').popup('close');
-  $('#username span.ui-btn-text').text(session.username);
-};
-
-window.lilac_authenticated = function(session) {
-  $(document).trigger('lilacauth', session);
 };
 
 controller.register(/^(menu)$/, MenuPage);

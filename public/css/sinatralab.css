@@ -1,0 +1,20 @@
+
+.authbadge {
+  padding: 3px 10px;
+  background-color: gray;
+}
+.authbadge:hover {
+  background-color: white;
+}
+.authbadge:active {
+  background-color: black;
+}
+.authbadge img {
+  height: 28px;
+  width: 28px;
+  padding: 0px;
+  margin: 0px;
+  border: none;
+  text-align: center;
+  vertical-align: middle;
+}
