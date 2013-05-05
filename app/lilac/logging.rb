@@ -88,5 +88,9 @@ module Kernel
   def logs
     return Lilac::Logging.instance
   end
+
+  def logging
+    return Lilac::Logging.instance
+  end
 end
 

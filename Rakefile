@@ -8,6 +8,37 @@ task :for_test, [:env] do |cmd, args|
   Rake::Task[:environment].execute(:env=>"test")
 end
 
+namespace :admin do
+
+  namespace :signup do
+
+    task :register, [:env] => :environment do
+      email_address = ENV['SIGNUP_EMAIL']
+      raise "Missing e-mail address for signup. specify environment variable 'SIGNUP_EMAIL'" if email_address.nil?
+      require 'lilac/models/common'
+      entry = Lilac::Models::SignupEntry.new
+      entry.email_address = email_address
+      entry.save
+    end
+
+    task :reregister, [:env] => :environment do
+      email_address = ENV['SIGNUP_EMAIL']
+      raise "Missing email address for signup. specify environment variable 'SIGNUP_EMAIL'" if email_address.nil?
+      require 'lilac/models/common'
+      account = Lilac::Models::Account.where(:email_address=>email_address).first
+      unless account.credential.nil?
+        account.credential.delete
+      end
+      entry = Lilac::Models::SignupEntry.new
+      entry.id = account.id
+      entry.email_address = email_address
+      entry.save
+    end
+
+  end
+
+end
+
 namespace :sq do
   namespace :migrate do
 

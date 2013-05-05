@@ -1,5 +1,6 @@
 require 'lilac/models/common'
 require 'lilac/models/bibliography'
+require 'lilac/helpers/auth'
 
 module Lilac
   class Application < Sinatra::Base
@@ -10,7 +11,7 @@ module Lilac
       also_reload "#{APP_ROOT}/app/lilac/**/*.rb"
     end
     configure do
-      helpers Sinatra::JSON
+      helpers Sinatra::JSON, Lilac::AuthHelper
       set :public_folder, File.expand_path("#{APP_ROOT}/public", __FILE__)
       set :json_encoder, :to_json
       enable :sessions
@@ -28,38 +29,45 @@ module Lilac
 
     namespace '/auth' do
       get '/twitter/callback' do
-        auth_hash = env['omniauth.auth']
-        logs.debug "==RAW INFO========="
-        logs.debug auth_hash.extra.raw_info
-        logs.debug "==INFO============="
-        logs.debug auth_hash.info
-        logs.debug "==SESSION=========="
-        logs.debug session
-        logs.debug "-----"
-        logs.debug auth_hash
+        env['rack.session.options'][:renew] = true
 
-        username = params['username']
-        screen_name = auth_hash.extra.raw_info['screen_name']
-        user_id = auth_hash.extra.raw_info['id']
-        account = Lilac::Models::Account[username]
-        if account.nil?
+        uid = params['uid']
+        signup_hash = params['sh']
+
+        auth_hash = env['omniauth.auth']
+        if uid.nil? or uid.empty?
+          logging.info('uid missing.')
           return 401
+        elsif signup_hash.nil? or singup_hash.empty?
+          signup(uid, signup_hash, auth_hash)
+        else
+          authenticate(uid, auth_hash)
         end
-        credential = account.credential
-        if not credential.nil? and credential.user_id != user_id
-          return 401
-        end
-        account.credential = {screen_name: screen_name, user_id: user_id}
+
+        nickname = auth_hash.info.nickname
+        username = auth_hash.info.name
         auth_info = {
+          uid: uid,
           username: username,
-          profile_image_url: auth_hash.extra.raw_info['profile_image_url']
+          nickname: nickname,
+          profile_image_url: auth_hash.extra.raw_info.profile_image_url
         }
+        session['auth_info'] = auth_info
         erb :authenticated, :locals=>auth_info, :content_type=>'text/html'
+      end
+
+      get '/logout' do
+        env['rack.session.options'][:renew] = true
+        session.delete('auth_info')
       end
     end
 
     namespace '/api' do
       get do
+        require_role :any
+        logs.debug('SESSION====================')
+        logs.debug(session)
+
         json({
           label: "/api/label",
           booksearch: "/api/booksearch"

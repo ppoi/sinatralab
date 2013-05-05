@@ -1,33 +1,31 @@
+require 'digest'
+require 'securerandom'
 
 module Lilac
   module Models
 
-    class Account < Sequel::Model
+    class SignupEntry < Sequel::Model
 
-      def credential
-        @credential ||= AccountCredential[name]
+      def entry_hash
+        Digest::SHA512.hexdigest("#{self.id}:#{self.email_address}:#{self.registration_timestamp}")
       end
 
-      def credential!
-        @credential = AccountCredential[name]
-      end
-
-      def credential=(args={})
-        if not args
-          AccountCredential[name].delete
-          @credential = nil
-        else
-          credential = @credential || AccountCredential[name]
-          if credential.nil?
-            credential = AccountCredential.new
-            credential.name = name
-          end
-          credential.screen_name = args[:screen_name]
-          credential.user_id = args[:user_id]
-          credential.save
-          @credential = credential
+      def before_create
+        #同じE-mailアドレスで登録申請があった場合、過去の申請情報を削除
+        duplication_check = SignupEntry.where(:email_address=>self.email_address)
+        if duplication_check.count
+          duplication_check.delete
         end
+        # アカウントUUID
+        self.id = SecureRandom.uuid if self.id.nil?
+        #登録タイムスタンプ
+        self.registration_timestamp = Time.now.strftime('%Y%m%d%H%M%S%N')
       end
+    end
+
+    class Account < Sequel::Model
+      plugin :optimistic_locking
+      one_to_one :credential, :class=>'Lilac::Models::AccountCredential', :key=>:id
     end
 
     class AccountCredential < Sequel::Model

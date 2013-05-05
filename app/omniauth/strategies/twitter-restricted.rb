@@ -6,20 +6,18 @@ module OmniAuth
     class TwitterRestricted < OmniAuth::Strategies::Twitter
       option :name, 'twitter'
 
-      alias :original_request_phase :request_phase
       def request_phase
-        logs.debug "Extended request_phase called!"
-        username = session['omniauth.params']['username']
-        logs.debug "authenticate with #{username}"
-        account = username ? Lilac::Models::Account[username] : nil
-        if account.nil?
-          logs.info "account <#{username}> is not found."
-          fail!(:invalid_credentials)
+        logs.debug "Extended request_phase called!: params=#{session['omniauth.params']}"
+        uid = session['omniauth.params']['uid']
+        signup_hash = session['omniauth.params']['sh']
+        if signup_hash and Lilac::Models::SignupEntry[uid, hash].nil?
+          fail!(:invalid_signup_hash)
+          return
+        elsif uid.nil? or Lilac::Models::Account[uid].nil?
+          fail!(:invalid_uid)
           return
         end
-        credential = account.credential
-        session['omniauth.params']['screen_name'] = credential.screen_name unless credential.nil?
-        original_request_phase
+        super
       end
     end
   end

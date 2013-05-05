@@ -5,7 +5,6 @@ define(['module', 'jquery', 'jquery.mobile'], function(module, jQuery) {
 $.widget('mobile.authbadge', $.mobile.widget, {
   options: {
     authenticated: false,
-    username: 'giest',
     profile_image_url: 'image/twitter-bird-dark-bgs.png',
     loginform_selector: '#auth',
     initSelector: ":jqmData(role='authbadge')"
@@ -19,35 +18,53 @@ $.widget('mobile.authbadge', $.mobile.widget, {
     }, this));
   },
 
+  _create_loginform: function() {
+    var authform = $('<form id="auth-form">'),
+        username_field = $('<input id="auth-username" type="text" placeholder="ユーザ名">'),
+        button = $('<img id="auth-go" src="image/sign-in-with-twitter-gray.png">'),
+        popup = $('<div id="auth" data-role="popup">').append(
+          $('<div class="ui-content">').append(authform.append(
+            $('<label for="auth-username" class="ui-hidden-accessible">ユーザ名</label>'),
+            username_field, button))).appendTo($.mobile.pageContainer);
+    username_field.textinput();
+    authform.on('submit', handle_authform_submit);
+    button.on('click', function() {authform.submit();
+    });
+    return popup.popup();
+  },
+
   _open_loginform: function() {
     var popup = $(this.options.loginform_selector);
 
     if(!popup.length) {
-      popup = $('<div id="auth">').append(
-        $('<div data-role="content">').append(
-          $('<form id="auth-form">').append(
-            $('<label for="auth-username" class="ui-hidden-accessible">ユーザ名</label>'),
-            $('<input id="auth-username" type="text" placeholder="ユーザ名">'),
-            $('<img id="auth-go" src="image/sign-in-with-twitter-gray.png">')))
-      ).appendTo($.mobile.pageContainer).popup();
+      popup = this._create_loginform();
     }
     popup.popup('open');
   }
 
 });
 
+function handle_authform_submit(event) {
+  var username = $('#auth-username').val();
+  window.open('/auth/twitter?username=' + username, 'lilac-auth');
+  return false;
+};
 
-//auto self-init widgets
 $.mobile.document.bind("pagecreate create", function(e) {
+  //auto self-init widgets
   $.mobile.authbadge.prototype.enhanceWithin(e.target);
+}).bind('lilacauthenticated', function(event, session) {
+  $(":jqmData(role='authbadge') img").attr('src', session.profile_image_url);
+  $('#auth').popup('close');
 });
+
 
 })(jQuery);
 
-window.lilac_authenticated = function(session) {
-  $(document).trigger('lilacauth', session);
-};
 
+window.lilac_authenticated = function(session) {
+  $.mobile.document.trigger('lilacauthenticated', session);
+};
 
 
 });

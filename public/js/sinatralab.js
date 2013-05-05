@@ -20,7 +20,7 @@ requirejs.config({
 define('sinatralab', ['require', 'jquery'], function(require, $) {
   var setup_deferred = $.Deferred(),
       setup_promise = setup_deferred.promise();
-  require(['widgets/authbadge','pages/menu'], function() {
+  require(['widgets/authbadge','pages/menu', 'pages/settings', 'pages/booksearch'], function() {
     setup_deferred.resolve();
   });
   $(document).on("mobileinit", function() {
