@@ -18,8 +18,7 @@ module Lilac
       register Sinatra::Namespace
       use Rack::PostBodyContentTypeParser
       use OmniAuth::Builder do
-        require 'omniauth/strategies/twitter-restricted'
-        provider :twitter_restricted, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET
+        provider :twitter, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, :setup=>true
       end
     end
 
@@ -28,20 +27,25 @@ module Lilac
     end
 
     namespace '/auth' do
+      get '/twitter/setup' do
+        uid = params['uid']
+        sh = params['sh']
+        unless (uid.nil? or uid.empty?) and (sh.nil? or sh.empty?)
+          validate_signup(uid, sh)
+        end
+        404
+      end
+
       get '/twitter/callback' do
         env['rack.session.options'][:renew] = true
 
         uid = params['uid']
-        signup_hash = params['sh']
-
+        sh = params['sh']
         auth_hash = env['omniauth.auth']
-        if uid.nil? or uid.empty?
-          logging.info('uid missing.')
-          return 401
-        elsif signup_hash.nil? or singup_hash.empty?
-          signup(uid, signup_hash, auth_hash)
+        if (uid.nil? or uid.empty?) and (sh.nil? or sh.empty?)
+          authenticate(auth_hash)
         else
-          authenticate(uid, auth_hash)
+          signup(uid, sh, auth_hash)
         end
 
         nickname = auth_hash.info.nickname

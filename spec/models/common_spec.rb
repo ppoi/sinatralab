@@ -50,20 +50,35 @@ describe 'Common models' do
   end
 
   describe 'Accout' do
+
+    it 'optimistic lock' do
+      account = create :account
+      account.lock_version.should eq 0
+      reload = Lilac::Models::Account[account.id]
+      reload.lock_version.should eq 0
+      account.email_address = 'mikumiku@example.com'
+      account.save
+      account.lock_version.should eq 1
+      expect {
+        reload.email_address = 'miku2@example.com'
+        reload.save
+      }.to raise_error Sequel::Plugins::OptimisticLocking::Error
+    end
+
     it 'associate credential' do
       account = create :account
       Lilac::Models::AccountCredential[account.id].should be_nil
 
       account.credential = build :account_credential
-      credential = Lilac::Models::AccountCredential[account.id]
+      credential = Lilac::Models::AccountCredential[account.credential.id]
       credential.should_not be_nil
-      credential.id.should eq account.id
+      credential.account_id.should eq account.id
     end
 
     it 'delete associated credential' do
       account = create :account
       account.credential = build :account_credential
-      account.credential(true).id.should eq account.id
+      account.credential(true).id.should eq '39'
       account.credential.delete
       account.credential(true).should be_nil
     end

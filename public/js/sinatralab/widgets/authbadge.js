@@ -20,16 +20,12 @@ $.widget('mobile.authbadge', $.mobile.widget, {
 
   _create_loginform: function() {
     var authform = $('<form id="auth-form">'),
-        username_field = $('<input id="auth-username" type="text" placeholder="ユーザ名">'),
         button = $('<img id="auth-go" src="image/sign-in-with-twitter-gray.png">'),
         popup = $('<div id="auth" data-role="popup">').append(
-          $('<div class="ui-content">').append(authform.append(
-            $('<label for="auth-username" class="ui-hidden-accessible">ユーザ名</label>'),
-            username_field, button))).appendTo($.mobile.pageContainer);
-    username_field.textinput();
+          $('<div class="ui-content">').append(authform.append(button))
+        ).appendTo($.mobile.pageContainer);
     authform.on('submit', handle_authform_submit);
-    button.on('click', function() {authform.submit();
-    });
+    button.on('click', function() {authform.submit();});
     return popup.popup();
   },
 
@@ -46,7 +42,7 @@ $.widget('mobile.authbadge', $.mobile.widget, {
 
 function handle_authform_submit(event) {
   var username = $('#auth-username').val();
-  window.open('/auth/twitter?username=' + username, 'lilac-auth');
+  window.open('/auth/twitter', 'lilac-auth');
   return false;
 };
 

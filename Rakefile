@@ -19,6 +19,7 @@ namespace :admin do
       entry = Lilac::Models::SignupEntry.new
       entry.email_address = email_address
       entry.save
+      puts "visit /auth/twitter?uid=#{entry.id}&sh=#{entry.entry_hash}"
     end
 
     task :reregister, [:env] => :environment do

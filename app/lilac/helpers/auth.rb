@@ -12,63 +12,59 @@ module Lilac
 
   module AuthHelper
 
-    def autheticate(uid, auth_hash)
-      account = Lilac::Models::Account[uid]
-      if account.nil?
-        logging.info("Invalid Account ID. id=#{uid}")
-        raise Lilac::AuthError.new "Invalid Account ID"
+    def authenticate(auth_hash)
+      credential = Lilac::Models::AccountCredential[auth_hash.uid]
+      if credential.nil?
+        raise Lilac::AuthError, "Unassociated Twitter ID."
       end
+      credential.update :token=>auth_hash.credentials.token, :secret=>auth_hash.credentials.secret
 
-      if account.credential.nil?
-        logging.info("Account credential not found. id=#{uid}")
-        raise Lilac::AuthError.new "Account credential not found"
-      end
-
-      external_id = account.credential.external_id
-      credential = create_account_credential(auth_hash, account.credential)
-      if external_id != credential.external_id
-        logging.info("Invalid external ID. expected '#{external_id}', but got '#{credential.external_id}'. id=#{uid}")
-        raise Lilac::AuthError.new "Invalid external ID"
-      end
-      credential.id = uid
-      credential.save
+      Lilac::Models::Account[credential.account_id]
     end
 
-    def signup(uid, signup_hash, auth_hash)
-      entry = Lilac::Models::SignupEntry[uid]
-      if entry.nil?
-        logging.info("Invalid Account/SignupEntry id. id=#{uid}")
-        raise Lilac::AuthError.new "Invalid Account/SignupEntry ID."
-      elsif signup_hash != entry.entry_hash
-        logging.info("Invalid SignupEntry Hash. expected '#{entry.entry_hash}', but got '#{signup_hash}'. id=#{entry.id}")
-        raise Lilac::AuthError.new "Invalid SignupEntry Hash"
-      else
-        current = (Time.now - (60 * 60 * 24)).strftime('%Y%m%d%H%M%S%N')
-        if curremt > entry.registration_timestamp
-          logging.info("SignupEntry expired. registration_timestamp=#{entry.registration_timestamp}, id=#{entry.id}")
-          raise Lilac::AuthError.new "SingupEntry expired"
-        end
-      end
+    def signup(uid, sh, auth_hash)
+      entry = validate_signup(uid, sh)
+      entry.delete
 
-      account = Lilac::Models::Account[uid] || Lilac::Models::Account.new(:id=>uid)
+      account = Lilac::Models::Account[entry.id]
+      if account.nil?
+        account = Lilac::Models::Account.new
+        account.id = entry.id
+      end
       account.email_address = entry.email_address
       account.save
 
-      credential = create_account_credential(auth_hash account.credential)
-      credential.id = uid
+      credential = account.credential || Lilac::Models::AccountCredential.new
+      credential.id = auth_hash.uid
+      credential.token = auth_hash.credentials.token
+      credential.secret = auth_hash.credentials.secret
+      credential.account_id = account.id
       credential.save
+    end
+
+    def validate_signup(uid, sh)
+      if uid.nil? or uid.empty? or sh.nil? or sh.empty?
+        raise Lilac::AuthError.new "Invalid Signup Parameter"
+      else
+        entry = Lilac::Models::SignupEntry[uid]
+        if entry.nil?
+          raise Lilac::AuthError.new "Invalid Signup Parameter"
+        elsif sh != entry.entry_hash
+          raise Lilac::AuthError.new "Invalid Signup Parameter"
+        else
+          current = (Time.now - (60 * 60 * 24)).strftime('%Y%m%d%H%M%S%N')
+          if current > entry.registration_timestamp
+            logging.info("SignupEntry expired. registration_timestamp=#{entry.registration_timestamp}, id=#{entry.id}")
+            raise Lilac::AuthError.new "SingupEntry expired"
+          end
+        end
+        return entry
+      end
     end
 
     def require_role(*args)
     end
 
-    def create_account_credential(auth_hash, credential)
-      credential ||= Lilac::Models::AccountCredental.new
-      credential.access_token = auth_hash.extra.access_token.token
-      credential.access_secret = auth_hash.extra.access_token.secret
-      credential.external_id = auth_hash.extra.raw_info.id
-      credential
-    end
   end
 
 end

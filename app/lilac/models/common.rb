@@ -25,7 +25,7 @@ module Lilac
 
     class Account < Sequel::Model
       plugin :optimistic_locking
-      one_to_one :credential, :class=>'Lilac::Models::AccountCredential', :key=>:id
+      one_to_one :credential, :class=>'Lilac::Models::AccountCredential'
     end
 
     class AccountCredential < Sequel::Model
