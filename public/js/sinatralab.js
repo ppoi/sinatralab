@@ -20,8 +20,10 @@ requirejs.config({
 define('sinatralab', ['require', 'jquery'], function(require, $) {
   var setup_deferred = $.Deferred(),
       setup_promise = setup_deferred.promise();
-  require(['widgets/authbadge','pages/menu', 'pages/settings', 'pages/booksearch'], function() {
-    setup_deferred.resolve();
+  require(['session', 'widgets/authbadge','pages/menu', 'pages/settings', 'pages/booksearch'], function(session) {
+    session.initialize().done(function() {
+      setup_deferred.resolve();
+    });
   });
   $(document).on("mobileinit", function() {
     $('#welcome').on('pageshow', function() {
@@ -30,6 +32,8 @@ define('sinatralab', ['require', 'jquery'], function(require, $) {
         $.mobile.loading('hide');
         $.mobile.changePage(location.href);
       });
+    }).on('pagehide', function(event, data) {
+      $.mobile.firstPage = data.nextPage;
     });
   });
 });

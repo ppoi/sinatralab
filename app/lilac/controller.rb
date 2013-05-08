@@ -60,9 +60,14 @@ module Lilac
         erb :authenticated, :locals=>auth_info, :content_type=>'text/html'
       end
 
+      get '/status' do
+        json session['auth_info']
+      end
+
       get '/logout' do
         env['rack.session.options'][:renew] = true
         session.delete('auth_info')
+        200
       end
     end
 

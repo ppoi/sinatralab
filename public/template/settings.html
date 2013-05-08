@@ -1,31 +1,18 @@
 <!DOCTYPE html><html><head><title>menu</title></head><body>
 
-<div id="menu" data-role="page">
+<div id="session" data-role="page">
   <div data-role="header">
-    <span data-role="authbadge"></span>
+    <a data-rel="back" data-icon="back">Back</a>
     <h1>Settings</h1>
   </div>
   <div data-role="content">
 
-    <div class="ui-body ui-body-d">
-      <h4><span id="settings-username">guest</span></h4>
+    <div id="account-info" class="ui-body ui-body-d">
+      <h4><img id="settings-profile-image"><span id="settings-username"></span><span id="settings-nickname"></span></h4>
+      <div id="account-session-button">
+      </div>
     </div>
 
-    <ul data-role="listview" data-inset="true">
-      <li data-role="list-divider">Aknowredgement</li>
-      <li>jQuery 1.9.1</li>
-      <li>jQuery Mobile 1.3.1</li>
-    </ul>
-
-  </div>
-  <div data-role="footer" data-position="fixed">
-    <div data-role="navbar" data-icon-pos="top">
-      <ul>
-        <li><a href="#menu" data-icon="home">Home</a></li>
-        <li><a href="#booksearch" data-icon="search">Booksearch</a></li>
-        <li><a href="#settings" data-icon="gear">Settings</a></li>
-      </ul>
-    </div>
   </div>
 </div>
 
