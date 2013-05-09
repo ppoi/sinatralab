@@ -1,25 +1,21 @@
 
 module Lilac
 
-  module Auth
-    Any = 0
-    Authenticated = 1
-    Administrator = 2
-  end
-
-  class AuthError < ::StandardError
-  end
+  class AuthError < ::StandardError; end
 
   module AuthHelper
 
     def authenticate(auth_hash)
       credential = Lilac::Models::AccountCredential[auth_hash.uid]
       if credential.nil?
-        raise Lilac::AuthError, "Unassociated Twitter ID."
+        raise Lilac::AuthError.new("Unassociated Twitter ID")
       end
       credential.update :token=>auth_hash.credentials.token, :secret=>auth_hash.credentials.secret
 
-      Lilac::Models::Account[credential.account_id]
+      account = Lilac::Models::Account[credential.account_id]
+      save_auth_info(account, auth_hash)
+
+      return account
     end
 
     def signup(uid, sh, auth_hash)
@@ -40,6 +36,10 @@ module Lilac
       credential.secret = auth_hash.credentials.secret
       credential.account_id = account.id
       credential.save
+
+      save_auth_info(account, auth_hash)
+
+      return account
     end
 
     def validate_signup(uid, sh)
@@ -62,9 +62,36 @@ module Lilac
       end
     end
 
-    def require_role(*args)
+    def require_auth(auth_type)
+      auth_info = session['auth_info']
+      case auth_type
+      when :any then
+        true
+      when :authenticated then
+        raise Lilac::AuthError.new("authorization insufficient") if auth_info.nil?
+      when :administrator then
+        raise Lilac::AuthError.new("authorization insufficient") if auth_info.nil?
+      end
     end
 
+    def auth_info
+      session['lilac.auth']
+    end
+
+    def save_auth_info(account, auth_hash)
+      auth_info = {
+        :uid=>account.id,
+        :username=>auth_hash.info.name,
+        :nickname=>auth_hash.info.nickname,
+        :profile_image=>auth_hash.info.image,
+      }
+      session['lilac.auth'] = auth_info
+      auth_info
+    end
+
+    def delete_auth_info
+      session.delete('lilac.auth')
+    end
   end
 
 end

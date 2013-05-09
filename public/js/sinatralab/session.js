@@ -3,7 +3,7 @@ define(['jquery'], function($) {
 function Session() {
   this.data = null;
   $(document).bind('lilacauthenticated', $.proxy(this.handle_authenticated, this))
-      .bind('lilaclogout', $.proxy(this.handle_logout, this));
+      .bind('lilaclogouted', $.proxy(this.handle_logout, this));
 };
 Session.prototype.get = function() {
   return this.data;
@@ -14,7 +14,7 @@ Session.prototype.authenticate = function() {
 Session.prototype.logout = function() {
   $.ajax('/auth/logout', {
   }).done(function(data, textStatus, jqXHR) {
-    $.mobile.document.trigger('lilaclogout');
+    $.mobile.document.trigger('lilaclogouted');
   }).fail(function(jqXHR, textStatus, errorThrown) {
     window.alert(errorThrown);
   });

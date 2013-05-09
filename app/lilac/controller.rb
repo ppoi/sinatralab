@@ -48,25 +48,16 @@ module Lilac
           signup(uid, sh, auth_hash)
         end
 
-        nickname = auth_hash.info.nickname
-        username = auth_hash.info.name
-        auth_info = {
-          uid: uid,
-          username: username,
-          nickname: nickname,
-          profile_image_url: auth_hash.extra.raw_info.profile_image_url
-        }
-        session['auth_info'] = auth_info
         erb :authenticated, :locals=>auth_info, :content_type=>'text/html'
       end
 
       get '/status' do
-        json session['auth_info']
+        json auth_info
       end
 
       get '/logout' do
         env['rack.session.options'][:renew] = true
-        session.delete('auth_info')
+        delete_auth_info
         200
       end
     end

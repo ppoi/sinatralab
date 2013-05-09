@@ -6,11 +6,7 @@
   </head>
   <body>
     <script type="text/javascript">
-      window.opener.trigger_lilacauthenticated({
-        username: '<%= username %>',
-        nickname: '<%= nickname %>',
-        profile_image_url: '<%= profile_image_url %>'
-      });
+      window.opener.trigger_lilacauthenticated(<%= auth_info.to_json %>);
       window.close();
     </script>
   </body>
