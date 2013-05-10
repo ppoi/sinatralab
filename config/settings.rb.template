@@ -9,7 +9,8 @@ case APP_ENVIRONMENT
     Lilac::Logging::Config[:stream] = :stdout
   when :test then
     Lilac::Logging::Config[:log_level] = :debug
-    Lilac::Logging::Config[:stream] = :stdout
+    Lilac::Logging::Config[:stream] = :to_file
+    Lilac::Logging::Config[:log_file] = "#{APP_ROOT}/tmp/lilac.test.log"
 end
 
 
@@ -17,7 +18,7 @@ end
 DB = case APP_ENVIRONMENT
   when :development then Sequel.connect("mysql2://localhost/lilac_dev", :user=>"lilac_dev", :password=>"lilac_dev", :logger=>logs)
   when :production  then Sequel.connect("mysql2://localhost/lilac_test", :user=>"lilac_test", :password=>"lilac_test", :logger=>logs)
-  when :test        then Sequel.connect("mysql2://localhost/lilac_test", :user=>"lilac_test", :password=>"lilac_test", :logger=>nil)
+  when :test        then Sequel.connect("mysql2://localhost/lilac_test", :user=>"lilac_test", :password=>"lilac_test", :logger=>logs)
 end
 
 

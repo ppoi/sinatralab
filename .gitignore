@@ -4,3 +4,4 @@ coverage
 rspec.xml
 *.swp
 config/settings.rb
+tmp/*.test.log
