@@ -5,7 +5,11 @@ module Lilac
 
   module AuthHelper
 
-    def authenticate(auth_hash)
+    def auth_hash
+      env['omniauth.auth']
+    end
+
+    def authenticate
       credential = Lilac::Models::AccountCredential[auth_hash.uid]
       if credential.nil?
         raise Lilac::AuthError.new("Unassociated Twitter ID")
@@ -18,7 +22,7 @@ module Lilac
       return account
     end
 
-    def signup(uid, sh, auth_hash)
+    def signup(uid, sh)
       entry = validate_signup(uid, sh)
       entry.delete
 
@@ -36,6 +40,7 @@ module Lilac
       credential.secret = auth_hash.credentials.secret
       credential.account_id = account.id
       credential.save
+      account.credential true
 
       save_auth_info(account, auth_hash)
 
@@ -55,7 +60,7 @@ module Lilac
           current = (Time.now - (60 * 60 * 24)).strftime('%Y%m%d%H%M%S%N')
           if current > entry.registration_timestamp
             logging.info("SignupEntry expired. registration_timestamp=#{entry.registration_timestamp}, id=#{entry.id}")
-            raise Lilac::AuthError.new "SingupEntry expired"
+            raise Lilac::AuthError.new "Signup expired"
           end
         end
         return entry

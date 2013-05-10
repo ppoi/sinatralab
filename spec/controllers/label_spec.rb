@@ -6,7 +6,7 @@ describe "Label API" do
 
   describe 'List: GET /label' do
     it "retun empty list" do
-      get '/label'
+      get '/api/label'
       last_response.should be_ok
       last_response.body.should eq('[]')
     end
@@ -17,7 +17,7 @@ describe "Label API" do
       create(:label_n)
       create(:label_n)
       create(:label_n)
-      get '/label'
+      get '/api/label'
 
       last_response.should be_ok
       result = JSON.parse(last_response.body)
@@ -30,10 +30,10 @@ describe "Label API" do
     end
   end
 
-  describe 'Show: GET /label/{id}' do
+  describe 'Show: GET /api/label/{id}' do
     it "return label info" do
       entity = create(:dengeki)
-      get "/label/#{entity.id}"
+      get "/api/label/#{entity.id}"
 
       last_response.should be_ok
       result = JSON.parse(last_response.body)
@@ -49,14 +49,14 @@ describe "Label API" do
     end
   end
 
-  describe 'Create: PUT /label' do
+  describe 'Create: PUT /api/label' do
     it "create successfuly" do
       entity = {
         name: 'MF文庫J',
         website: 'http://www.mediafactory.co.jp/bunkoj/',
         publisher: 'メディアファクトリー'
       }
-      put '/label', entity.to_json, "CONTENT_TYPE"=>"application/json"
+      put '/api/label', entity.to_json, "CONTENT_TYPE"=>"application/json"
 
       last_response.should be_ok
       result = JSON.parse(last_response.body)
@@ -67,7 +67,7 @@ describe "Label API" do
     end
   end
 
-  describe 'Modify: POST /label/{id}' do
+  describe 'Modify: POST /api/label/{id}' do
     it 'update succcessfuly' do
       origin = create(:label_n)
       entity = {
@@ -75,7 +75,7 @@ describe "Label API" do
         website: "http://example.com",
         publisher: "テスト出版社"
       }
-      post "/label/#{origin.id}", entity.to_json, "CONTENT_TYPE"=>"application/json"
+      post "/api/label/#{origin.id}", entity.to_json, "CONTENT_TYPE"=>"application/json"
 
       last_response.should be_ok
       result = JSON.parse(last_response.body)
@@ -91,22 +91,22 @@ describe "Label API" do
         website: "http://example.com",
         publisher: "テスト出版社"
       }
-      post "/label/39", entity.to_json, "CONTENT_TYPE"=>"application/json"
+      post "/api/label/39", entity.to_json, "CONTENT_TYPE"=>"application/json"
 
       last_response.status.should eq(404)
     end
   end
 
-  describe 'Delete: DELETE /label/{id}' do
+  describe 'Delete: DELETE /api/label/{id}' do
     it 'delete successfuly' do
       entity = create(:label_n)
-      delete "/label/#{entity.id}"
+      delete "/api/label/#{entity.id}"
 
       last_response.should be_ok
     end
 
     it 'delete successfuly also not exists' do
-      delete "/label/39"
+      delete "/api/label/39"
 
       last_response.should be_ok
     end

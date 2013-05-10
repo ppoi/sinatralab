@@ -41,14 +41,13 @@ module Lilac
 
         uid = params['uid']
         sh = params['sh']
-        auth_hash = env['omniauth.auth']
         if (uid.nil? or uid.empty?) and (sh.nil? or sh.empty?)
-          authenticate(auth_hash)
+          authenticate
         else
-          signup(uid, sh, auth_hash)
+          signup(uid, sh)
         end
 
-        erb :authenticated, :locals=>auth_info, :content_type=>'text/html'
+        erb :authenticated, :content_type=>'text/html'
       end
 
       get '/status' do
@@ -64,7 +63,6 @@ module Lilac
 
     namespace '/api' do
       get do
-        require_role :any
         logs.debug('SESSION====================')
         logs.debug(session)
 

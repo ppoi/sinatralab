@@ -37,6 +37,10 @@ FactoryGirl.find_definitions
 
 
 def app
-  @app ||= LilacAPI::Application
+  if @app.nil?
+    require 'lilac/controller'
+    @app = Lilac::Application
+  end
+  @app
 end
 
