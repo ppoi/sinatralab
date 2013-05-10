@@ -134,7 +134,7 @@ describe 'AuthHelper' do
 
   it 'validate_signup to expired' do
     entry = create :signup_entry
-    entry.update :registration_timestamp=>'20130509170000393939393'
+    entry.update :registration_timestamp=>(Time.now - (60*60*24 + 1)).strftime('%Y%m%d%H%M%S%N')
 
     expect {
       AuthHelperSpec::App.new.validate_signup entry.id, entry.entry_hash
